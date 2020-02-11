@@ -12,12 +12,10 @@ namespace ShiftWebService.Controllers
     public class PedidoController : ControllerBase
     {
         private readonly ILogger<PedidoController> _logger;
-        private readonly WSProcessoSeletivoSoap _wSProcessoSeletivoSoap;
 
-        public PedidoController(ILogger<PedidoController> logger, WSProcessoSeletivoSoap wSProcessoSeletivoSoap)
+        public PedidoController(ILogger<PedidoController> logger)
         {
             _logger = logger;
-            _wSProcessoSeletivoSoap = wSProcessoSeletivoSoap;
         }
 
         [HttpPost]
@@ -53,7 +51,8 @@ namespace ShiftWebService.Controllers
                 {
                     item.pedido.ordemServico = pedido_OrdemServico;
                 }
-                var listEnum = Enum.GetValues(typeof(Connected_Services.Model.EnumExame)).Cast<Connected_Services.Model.EnumExame>();
+                var listEnum = Enum.GetNames(typeof(Connected_Services.Model.EnumExame));
+
 
                 bool hasMatch = item.exames.GroupBy(x => x.codigo)
                     .Any(x => listEnum.Any(y => y.ToString() == x.Key));
@@ -65,6 +64,19 @@ namespace ShiftWebService.Controllers
             }
 
             string descricaoRequisicao;
+            //var pedido = new PedidoLab[]
+            //{
+            //    new PedidoLab
+            //    {
+            //        identificador = "",
+            //        pedido= new Pedido{ codigo ="", ordemServico="" },
+            //        paciente = new Paciente{ codigo="",nome="", sexo="" },
+            //        exames = new Exame[]
+            //        { new Exame
+            //            { codigo = ((int)Connected_Services.Model.EnumExame.Glicose).ToString(),descricao="" }
+            //        }
+            //    }
+            //};
 
             var retorno = WsClient.SolicitaPedido(pedidoLab, out descricaoRequisicao);
 
